@@ -1,12 +1,14 @@
 package org.csh.study.nio.chat.myself.server;
 
 import org.csh.study.nio.chat.myself.ChatConstant;
+import org.csh.study.nio.chat.myself.controller.ServerController;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
+import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -15,8 +17,9 @@ import java.util.Set;
  */
 public class ChatRoomServer {
 
-    Selector selector = null;
-    ServerSocketChannel serverSocketChannel = null;
+    private Selector selector = null;
+    private ServerSocketChannel serverSocketChannel = null;
+    private ServerController serverController = new ServerController();
 
     public ChatRoomServer() {
         try {
@@ -69,12 +72,21 @@ public class ChatRoomServer {
     /**
      * 处理不同的 SelectionKey
      */
-    private void dealWithSelectionKey(SelectionKey key) {
-        if (key.isReadable()) {
-
+    private void dealWithSelectionKey(SelectionKey key) throws IOException {
+        // 接收新的用户
+        if (key.isAcceptable()) {
+            // 接收通道
+            SocketChannel socketChannel = this.serverSocketChannel.accept();
+            // 设置为非阻塞
+            socketChannel.configureBlocking(false);
+            // 将该通道绑定为
+            socketChannel.register(this.selector, SelectionKey.OP_READ);
+            // 接收 OP_ACCEPT 处理
+            key.interestOps(SelectionKey.OP_ACCEPT);
+            serverController.acceptNewConnection();
         }
 
-        if (key.isAcceptable()) {
+        if (key.isReadable()) {
 
         }
 

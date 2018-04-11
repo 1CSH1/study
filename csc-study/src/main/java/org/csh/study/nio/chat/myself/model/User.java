@@ -3,26 +3,16 @@ package org.csh.study.nio.chat.myself.model;
 /**
  * 用户
  */
-public class User {
+public class User extends BaseModel{
 
-    private int id;
     private String name;
     private int age;
     private int gender;
 
-    public User(int id, String name, int age, int gender) {
-        this.id = id;
+    public User(String name, int age, int gender) {
         this.name = name;
         this.age = age;
         this.gender = gender;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -52,7 +42,7 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                "id=" + id +
+                "id=" + super.getId() +
                 ", name='" + name + '\'' +
                 ", age=" + age +
                 ", gender=" + gender +

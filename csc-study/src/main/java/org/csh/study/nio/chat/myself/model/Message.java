@@ -5,26 +5,16 @@ import java.util.Date;
 /**
  * 消息体
  */
-public class Message {
+public class Message extends BaseModel {
 
-    private int id;
     private String content;
     private Date date;
     private User user;
 
-    public Message(int id, String content, Date date, User user) {
-        this.id = id;
+    public Message(String content, Date date, User user) {
         this.content = content;
         this.date = date;
         this.user = user;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getContent() {
@@ -54,7 +44,7 @@ public class Message {
     @Override
     public String toString() {
         return "Message{" +
-                "id=" + id +
+                "id=" + super.getId() +
                 ", content='" + content + '\'' +
                 ", date=" + date +
                 ", user=" + user +
