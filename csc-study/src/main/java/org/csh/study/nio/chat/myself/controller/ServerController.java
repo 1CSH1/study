@@ -15,10 +15,8 @@ public class ServerController {
     /**
      * 服务端接收新的连接
      */
-    public void acceptNewConnection() {
-
-        // 创建用户
-        User user = new User();
+    public void acceptNewConnection(String name, int age, int gender) {
+        this.userService.addUser(name, age, gender);
     }
 
 }

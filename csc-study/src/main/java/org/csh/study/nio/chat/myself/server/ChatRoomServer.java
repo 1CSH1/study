@@ -5,10 +5,12 @@ import org.csh.study.nio.chat.myself.controller.ServerController;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
+import java.nio.charset.Charset;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -19,6 +21,7 @@ public class ChatRoomServer {
 
     private Selector selector = null;
     private ServerSocketChannel serverSocketChannel = null;
+
     private ServerController serverController = new ServerController();
 
     public ChatRoomServer() {
@@ -83,7 +86,9 @@ public class ChatRoomServer {
             socketChannel.register(this.selector, SelectionKey.OP_READ);
             // 接收 OP_ACCEPT 处理
             key.interestOps(SelectionKey.OP_ACCEPT);
-            serverController.acceptNewConnection();
+
+            System.out.println("Server is listening from client :" + socketChannel.getRemoteAddress());
+            socketChannel.write(ChatConstant.charset.encode("Please input your name."));
         }
 
         if (key.isReadable()) {

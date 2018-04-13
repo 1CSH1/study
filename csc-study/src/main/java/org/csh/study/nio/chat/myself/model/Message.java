@@ -11,6 +11,9 @@ public class Message extends BaseModel {
     private Date date;
     private User user;
 
+    public Message() {
+    }
+
     public Message(String content, Date date, User user) {
         this.content = content;
         this.date = date;

@@ -10,7 +10,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class BaseDao<T extends BaseModel> {
 
-
     /**
      * 保存数据
      */

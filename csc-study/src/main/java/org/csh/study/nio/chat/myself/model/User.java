@@ -9,6 +9,9 @@ public class User extends BaseModel{
     private int age;
     private int gender;
 
+    public User() {
+    }
+
     public User(String name, int age, int gender) {
         this.name = name;
         this.age = age;
