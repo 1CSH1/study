@@ -17,4 +17,6 @@ public class ChatConstant {
      */
     public static final Charset charset = Charset.forName("UTF-8");
 
+    public static final String SPILTSTRING = "%&";
+
 }

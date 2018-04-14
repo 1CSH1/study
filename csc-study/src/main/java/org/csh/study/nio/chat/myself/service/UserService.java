@@ -21,4 +21,13 @@ public class UserService {
         this.userDao.save(user);
     }
 
+    /**
+     * 判断是否存在用户
+     * @param name      用户名
+     * @return
+     */
+    public boolean isExists(String name) {
+        return this.userDao.isExists(name);
+    }
+
 }

@@ -13,7 +13,7 @@ public class BaseDao<T extends BaseModel> {
     /**
      * 保存数据
      */
-    private ConcurrentHashMap<Integer, T> cacheMap = new ConcurrentHashMap<Integer, T>();
+    protected ConcurrentHashMap<Integer, T> cacheMap = new ConcurrentHashMap<Integer, T>();
     /**
      * 计数器
      */

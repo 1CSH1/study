@@ -19,4 +19,23 @@ public class ServerController {
         this.userService.addUser(name, age, gender);
     }
 
+    /**
+     * 添加用户
+     * @param name      名称
+     * @param age       年龄
+     * @param gender    性别
+     */
+    public void addUser(String name, int age, int gender) {
+        this.userService.addUser(name,age, gender);
+    }
+
+    /**
+     * 判断是否存在用户
+     * @param name      用户名
+     * @return
+     */
+    public boolean isExists(String name) {
+        return this.userService.isExists(name);
+    }
+
 }
