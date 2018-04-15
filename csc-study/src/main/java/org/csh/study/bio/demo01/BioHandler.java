@@ -20,12 +20,13 @@ public class BioHandler implements Runnable {
 
     @Override
     public void run() {
-
         BufferedReader in = null;
         PrintWriter out = null;
         try {
-            in = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
-            out = new PrintWriter(this.socket.getOutputStream(), true);
+            in = new BufferedReader(new InputStreamReader(
+                    this.socket.getInputStream()));
+            out = new PrintWriter(this.socket.getOutputStream(),
+                    true);
 
             while (true) {
                 String line = in.readLine();
@@ -53,7 +54,6 @@ public class BioHandler implements Runnable {
                 e.printStackTrace();
             }
         }
-
-
     }
 }
+
