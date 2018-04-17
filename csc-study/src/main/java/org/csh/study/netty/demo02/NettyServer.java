@@ -1,4 +1,4 @@
-package org.csh.study.netty.demo01;
+package org.csh.study.netty.demo02;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;

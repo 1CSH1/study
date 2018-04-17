@@ -1,4 +1,4 @@
-package org.csh.study.netty.demo01;
+package org.csh.study.netty.demo03;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -8,6 +8,8 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.LineBasedFrameDecoder;
+import io.netty.handler.codec.string.StringDecoder;
 
 public class NettyServer {
 
@@ -43,6 +45,8 @@ public class NettyServer {
 class ChildChannelHandler extends ChannelInitializer<SocketChannel> {
     @Override
     protected void initChannel(SocketChannel channel) throws Exception {
+        channel.pipeline().addLast(new LineBasedFrameDecoder(1024));
+        channel.pipeline().addLast(new StringDecoder());
         channel.pipeline().addLast(new NettyServerHandler());
     }
 }
