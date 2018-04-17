@@ -9,5 +9,8 @@
         <module name="csc-study" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="csc-study" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
 </project>
