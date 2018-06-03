@@ -23,13 +23,42 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.11</version>
-      <scope>test</scope>
+      <!--<scope>test</scope>-->
     </dependency>
 
+    <!-- netty -->
+    <!--
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-all</artifactId>
       <version>5.0.0.Alpha1</version>
+    </dependency>
+    -->
+
+    <!-- elasticsearch -->
+    <dependency>
+      <groupId>org.elasticsearch</groupId>
+      <artifactId>elasticsearch</artifactId>
+      <version>5.6.9</version>
+    </dependency>
+    <!-- 这个一定要引入，这是使用transport的jar -->
+    <dependency>
+      <groupId>org.elasticsearch.client</groupId>
+      <artifactId>transport</artifactId>
+      <version>5.6.9</version>
+    </dependency>
+    <!-- es 的jar 对guava有依赖 -->
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>18.0</version>
+    </dependency>
+
+    <!-- fastjsonssssssssss -->
+    <dependency>
+      <groupId>com.alibaba</groupId>
+      <artifactId>fastjson</artifactId>
+      <version>1.2.47</version>
     </dependency>
 
   </dependencies>
