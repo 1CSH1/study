@@ -1,4 +1,4 @@
-package org.csh.study.elasticsearch.demo01;
+package org.csh.study.elasticsearch;
 
 import org.elasticsearch.action.ActionListener;
 import org.elasticsearch.action.DocWriteResponse;
@@ -19,10 +19,8 @@ import org.elasticsearch.common.unit.ByteSizeValue;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.index.reindex.BulkByScrollResponse;
-import org.elasticsearch.index.reindex.DeleteByQueryAction;
+import org.elasticsearch.index.reindex.*;
 import org.elasticsearch.script.Script;
-import org.elasticsearch.script.ScriptService;
 import org.elasticsearch.script.ScriptType;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.junit.After;
@@ -32,13 +30,18 @@ import org.junit.Test;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Collections;
 import java.util.Date;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
 
-public class ElasticSearchDemo01 {
+/**
+ * @author James
+ * @date 2018/6/6
+ */
+public class DocumentAPITest {
 
     private TransportClient client = null;
 
@@ -145,7 +148,7 @@ public class ElasticSearchDemo01 {
                 .id("1")
                 .doc(jsonBuilder()
                         .startObject()
-                            .field("gender", "male")
+                        .field("gender", "male")
                         .endObject());
         client.update(updateRequest).get();
     }
@@ -161,7 +164,7 @@ public class ElasticSearchDemo01 {
         client.prepareUpdate("ttl", "doc", "1")
                 .setDoc(jsonBuilder()
                         .startObject()
-                            .field("gender", "male")
+                        .field("gender", "male")
                         .endObject())
                 .get();
     }
@@ -173,20 +176,37 @@ public class ElasticSearchDemo01 {
     public void updateByUpsert() throws IOException, ExecutionException, InterruptedException {
         IndexRequest indexRequest = new IndexRequest("index", "type", "1")
                 .source(jsonBuilder()
-                            .startObject()
-                                .field("name", "James")
-                                .field("gender", "male")
-                            .endObject());
+                        .startObject()
+                        .field("name", "James")
+                        .field("gender", "male")
+                        .endObject());
         UpdateRequest updateRequest = new UpdateRequest("index", "type", "1")
                 .doc(jsonBuilder()
                         .startObject()
-                            .field("gender", "female")
+                        .field("gender", "female")
                         .endObject())
                 .upsert(indexRequest);
         client.update(updateRequest).get();
     }
 
-    https://www.elastic.co/guide/en/elasticsearch/client/java-api/5.6/java-docs-update-by-query.html
+    /**
+     * 通过 query 更新
+     */
+    @Test
+    public void updateByQueryAPI() {
+        UpdateByQueryRequestBuilder updateByQueryRequestBuilder = UpdateByQueryAction.INSTANCE.newRequestBuilder(client);
+        updateByQueryRequestBuilder.source("twitter")
+                .script(new Script(ScriptType.INLINE,
+                        "if (ctx._source.awesome == 'absolutely) {"
+                                + "  ctx.op='noop'"
+                                + "} else if (ctx._source.awesome == 'lame') {"
+                                + "  ctx.op='delete'"
+                                + "} else {"
+                                + "ctx._source.awesome = 'absolutely'}",
+                        "painless",
+                        Collections.emptyMap()));
+        BulkByScrollResponse response = updateByQueryRequestBuilder.get();
+    }
 
     /**
      * 查询多个对象
@@ -214,23 +234,23 @@ public class ElasticSearchDemo01 {
     public void bulkAPI() throws IOException {
         BulkRequestBuilder bulkRequestBuilder = client.prepareBulk();
         bulkRequestBuilder.add(client.prepareIndex("twitter", "tweet", "2")
-                                        .setSource(jsonBuilder()
-                                                        .startObject()
-                                                            .field("user", "Lebron")
-                                                            .field("postDate", new Date())
-                                                            .field("message", "哈哈哈")
-                                                        .endObject()
-                                        )
-                                );
+                .setSource(jsonBuilder()
+                        .startObject()
+                        .field("user", "Lebron")
+                        .field("postDate", new Date())
+                        .field("message", "哈哈哈")
+                        .endObject()
+                )
+        );
         bulkRequestBuilder.add(client.prepareIndex("twitter", "tweet", "3")
-                                        .setSource(jsonBuilder()
-                                                        .startObject()
-                                                            .field("user", "Love")
-                                                            .field("postDate", new Date())
-                                                            .field("message", "乐福")
-                                                        .endObject()
-                                        )
-                                );
+                .setSource(jsonBuilder()
+                        .startObject()
+                        .field("user", "Love")
+                        .field("postDate", new Date())
+                        .field("message", "乐福")
+                        .endObject()
+                )
+        );
 
         BulkResponse bulkResponse = bulkRequestBuilder.get();
         if (bulkResponse.hasFailures()){
@@ -265,19 +285,27 @@ public class ElasticSearchDemo01 {
                 .setFlushInterval(TimeValue.timeValueSeconds(5)) // 每5秒执行一次，不管有多少数据
                 .setConcurrentRequests(1) // 并发线程
                 .setBackoffPolicy(BackoffPolicy.exponentialBackoff(TimeValue.timeValueMillis(100), 3)) //
-          .build();
+                .build();
 
         bulkProcessor.add(new IndexRequest("twitter", "tweet", "4")
                 .source(jsonBuilder( )
-                            .startObject()
-                                .field("user", "Love")
-                                .field("postDate", new Date())
-                                .field("message", "乐福")
-                            .endObject()));
+                        .startObject()
+                        .field("user", "Love")
+                        .field("postDate", new Date())
+                        .field("message", "乐福")
+                        .endObject()));
         bulkProcessor.add(new DeleteRequest("twitter", "tweet", "4"));
 
         bulkProcessor.awaitClose(10, TimeUnit.MINUTES);
 
+    }
+
+    @Test
+    public void reindexAPI() {
+        BulkByScrollResponse response = ReindexAction.INSTANCE.newRequestBuilder(client)
+                .destination("twitter")
+                .filter(QueryBuilders.matchQuery("category", "abc"))
+                .get();
     }
 
     @After
