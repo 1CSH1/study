@@ -11,9 +11,6 @@ import org.elasticsearch.action.get.MultiGetResponse;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.update.UpdateRequest;
-import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.common.unit.ByteSizeUnit;
 import org.elasticsearch.common.unit.ByteSizeValue;
 import org.elasticsearch.common.unit.TimeValue;
@@ -22,14 +19,9 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.reindex.*;
 import org.elasticsearch.script.Script;
 import org.elasticsearch.script.ScriptType;
-import org.elasticsearch.transport.client.PreBuiltTransportClient;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.Collections;
 import java.util.Date;
 import java.util.concurrent.ExecutionException;
@@ -41,18 +33,7 @@ import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
  * @author James
  * @date 2018/6/6
  */
-public class DocumentAPITest {
-
-    private TransportClient client = null;
-
-    @Before
-    public void init() throws UnknownHostException, InterruptedException {
-        client = new PreBuiltTransportClient(Settings.EMPTY)
-                .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("172.28.148.161"), 9300));
-        Settings settings = Settings.builder()
-                .put("cluster.name", "elasticsearch").build();
-        TransportClient client = new PreBuiltTransportClient(settings);
-    }
+public class DocumentAPITest extends Base {
 
     @Test
     public void indexAPIString() throws IOException {
@@ -308,9 +289,5 @@ public class DocumentAPITest {
                 .get();
     }
 
-    @After
-    public void close() {
-        client.close();
-    }
 
 }
